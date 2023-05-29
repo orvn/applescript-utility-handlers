@@ -47,6 +47,73 @@ on convertPathToMacStyle(unixPath)
     end try
 end convertPathToMacStyle
 
+-- Switch the current app
+-- Switch to a particular app name, and optionally start the app if it isn't open yet
+on switchApp(appName, startApp)
+    try
+        tell application "System Events"
+            if exists application process appName then
+                if not (exists (process appName)) then
+                    if startApp is true then
+                        tell application appName to activate
+                    else
+                        display dialog appName & " is not currently running, and the script is set not to open it."
+                    end if
+                else
+                    set frontmost of process appName to true
+                end if
+            else
+                display dialog "The application " & appName & " could not be found."
+            end if
+        end tell
+    on error errMsg
+        display dialog "Error switching to app: " & errMsg
+    end try
+end switchApp
+
+-- Cycle through windows of an app
+-- Switch to a window number, or to a particular matching window title string
+on switchWindow(appName, targetTitle, windowNumber)
+    try
+        set targetApp to ""
+        if appName is "" then
+            tell application "System Events"
+                set targetApp to name of first application process whose frontmost is true
+            end tell
+        else
+            set targetApp to appName
+        end if
+        tell application targetApp
+            set windowCount to count of windows
+            if windowCount > 1 then
+                if targetTitle is not "" then
+                    repeat with i from 1 to windowCount
+                        if name of window i is targetTitle then
+                            set index of window i to 1
+                            return "Switched to window '" & targetTitle & "' in " & targetApp & "."
+                        end if
+                    end repeat
+                    return "No window with title '" & targetTitle & "' found in " & targetApp & "."
+                else if windowNumber is not "" then
+                    if windowNumber > 0 and windowNumber <= windowCount then
+                        set index of window windowNumber to 1
+                        return "Switched to window " & windowNumber & " in " & targetApp & "."
+                    else
+                        return "Invalid window number. Choose a number between 1 and " & windowCount & "."
+                    end if
+                else
+                    set index of window 1 to windowCount
+                    return "Switched to window " & windowCount & " in " & targetApp & "."
+                end if
+            else
+                return "There's only one window open for " & targetApp & "."
+            end if
+        end tell
+    on error errMsg
+        return "Error switching window: " & errMsg
+    end try
+end switchWindow
+
 -- Get file or folder size
 -- Use Finder to get the size of a file or folder, as an integer
 on getSize(itemPath)
