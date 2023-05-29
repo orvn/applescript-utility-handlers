@@ -169,3 +169,14 @@ on getCurrentWiFi()
     try
         do shell script "/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport -I | awk '/ SSID/ {print substr($0, index($0, $2))}'"
     on error errMsg
+
+-- Convert image
+-- Convert an image into another image, changing the types, most often used to convert HEIC to PNG or JPG
+on convertImage(sourcePath, destinationPath, format)
+    try
+        if format is not in {"jpeg", "png"} then error "Invalid format. Please specify 'jpeg' or 'png'."
+        do shell script "sips -s format " & format & " " & quoted form of sourcePath & " --out " & quoted form of destinationPath
+    on error errMsg
+        display dialog "Error converting image: " & errMsg
+    end try
+end convertImage
