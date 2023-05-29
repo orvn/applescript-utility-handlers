@@ -6,6 +6,47 @@ Version 0.1
 APL 2.0
 *)
 
+-- Compile AppleScript
+-- Perform compilation on .AppleScript file to make it into a binary
+on compileAppleScript(sourcePath, destPath)
+    set shellCommand to "osacompile -o " & destPath & " " & sourcePath
+    try
+        do shell script shellCommand
+    on error errMsg number errNum
+        display dialog "An error occurred: " & errMsg & " (Error " & errNum & ")"
+    end try
+end compileAppleScript
+
+-- Macintosh-flavor paths
+-- Convert between classic macintosh-style and unix-style paths, and vice-versa
+on convertPathToUnixStyle(macPath)
+    try
+        set oldDelims to AppleScript's text item delimiters
+        set AppleScript's text item delimiters to ":"
+        set pathItems to text items of macPath
+        set AppleScript's text item delimiters to "/"
+        set unixPath to "/" & pathItems as text
+        set AppleScript's text item delimiters to oldDelims
+        return unixPath
+    on error errMsg number errNum
+        display dialog "An error occurred: " & errMsg & " (Error " & errNum & ")"
+    end try
+end convertPathToUnixStyle
+
+on convertPathToMacStyle(unixPath)
+    try
+        set oldDelims to AppleScript's text item delimiters
+        set AppleScript's text item delimiters to "/"
+        set pathItems to text items of unixPath
+        set AppleScript's text item delimiters to ":"
+        set macPath to pathItems as text
+        set AppleScript's text item delimiters to oldDelims
+        return macPath
+    on error errMsg number errNum
+        display dialog "An error occurred: " & errMsg & " (Error " & errNum & ")"
+    end try
+end convertPathToMacStyle
+
 -- Get file or folder size
 -- Use Finder to get the size of a file or folder, as an integer
 on getSize(itemPath)
