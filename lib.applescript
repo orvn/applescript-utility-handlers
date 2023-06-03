@@ -185,6 +185,20 @@ on showNotification(title, message)
     end if
 end showNotification
 
+-- Toggle dark mode
+-- Switch between dark and light mode, including forcing any apps that adhere to the system setting for color mode
+on toggleDarkMode()
+    try
+        tell application "System Events"
+            tell appearance preferences
+                set dark mode to not dark mode
+            end tell
+        end tell
+    on error errMsg
+        display dialog "Error toggling dark mode: " & errMsg
+    end try
+end toggleDarkMode
+
 -- Timer
 -- Display a timed dialog box, setting a timer in seconds
 on displayTimedDialog(message, seconds)
