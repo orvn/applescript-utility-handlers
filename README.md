@@ -14,3 +14,4 @@ This is a work in progress, I'm currently adding my old AppleScript to the `lib.
 - Sort by category
 - Provide usage docs
 - Compile and provide binary file
+- Compile CLI variants

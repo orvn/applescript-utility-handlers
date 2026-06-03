@@ -287,10 +287,13 @@ on quitAllApps()
 end quitAllApps
 
 -- Return the current wifi network
-on getCurrentWiFi()
+on getCurrentWifi()
     try
         do shell script "/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport -I | awk '/ SSID/ {print substr($0, index($0, $2))}'"
     on error errMsg
+        display dialog "Error getting wifi network: " & errMsg
+    end try
+end getCurrentWifi
 
 -- Convert image
 -- Convert an image into another image, changing the types, most often used to convert HEIC to PNG or JPG
